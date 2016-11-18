@@ -21,12 +21,8 @@ from . import johnson
 """
 
 
-a0 = const.physical_constants["Bohr radius"][0]
-CONST = 2*(np.pi*const.e*a0)**2*1.0e4/3/const.epsilon_0
-
-
 def cross_section(wavenumber, wfu, wfi, R, dipolemoment):
-    """ photodissociation cross section |<f|M|i>|^2.
+    """ photodissociation cross section E|<f|M|i>|^2.
 
     Parameters
     ----------
@@ -46,6 +42,10 @@ def cross_section(wavenumber, wfu, wfi, R, dipolemoment):
 
     """
 
+    a0 = const.physical_constants["Bohr radius"][0]
+    CONST = 2*(np.pi*const.e*a0)**2*1.0e4/3/const.epsilon_0
+    CONST *= wavenumber*1.0e-8
+
     oo, n, nopen = wfu.shape
 
     Re = wfu.real
@@ -62,7 +62,7 @@ def cross_section(wavenumber, wfu, wfi, R, dipolemoment):
         Rx = simps(ReX[:, j], R)
         Ix = simps(ImX[:, j], R)
         xx = Rx**2 + Ix**2
-        xs = xx*CONST*wavenumber*1.0e-8
+        xs = xx*CONST
         xsp.append(xs)
 
     return xsp
